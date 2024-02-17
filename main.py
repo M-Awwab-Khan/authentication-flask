@@ -74,15 +74,15 @@ def login():
 
 
 @app.route('/secrets')
+@login_required
 def secrets():
     return render_template("secrets.html")
 
-
-@app.route('/logout')
+@login_required
 def logout():
     pass
 
-
+@login_required
 @app.route('/download')
 def download():
     return send_from_directory(
