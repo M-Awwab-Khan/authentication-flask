@@ -6,8 +6,17 @@ from sqlalchemy import Integer, String
 from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'secret-key-goes-here'
+app.config['SECRET_KEY'] = 'mksjdfaueirjawekrn;akudjfsioj2394u'
 app.config['UPLOAD_FOLDER'] = 'static/files'
+
+# CONFIGURE FLASK LOGIN
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+# LOAD USER
+@login_manager.user_loader
+def load_user(user_id):
+    return db.get_or_404(user_id)
 
 # CREATE DATABASE
 class Base(DeclarativeBase):
@@ -17,7 +26,7 @@ db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 
 # CREATE TABLE IN DB
-class User(db.Model):
+class User(UserMixin, db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     email: Mapped[str] = mapped_column(String(100), unique=True)
     password: Mapped[str] = mapped_column(String(100))
