@@ -38,6 +38,8 @@ with app.app_context():
 
 @app.route('/')
 def home():
+    if current_user.is_authenticated:
+        return render_template('index.html', logged_in=True)
     return render_template("index.html")
 
 
@@ -59,7 +61,7 @@ def register():
         db.session.add(new_user)
         db.session.commit()
         login_user(new_user)
-        return render_template('secrets.html', name=new_user.name)
+        return render_template('secrets.html', name=new_user.name, logged_in=True)
 
     return render_template("register.html")
 
