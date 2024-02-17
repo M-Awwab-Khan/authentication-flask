@@ -76,7 +76,7 @@ def login():
         if user:
             if check_password_hash(user.password, password):
                 login_user(user)
-                return redirect(url_for('secrets'))
+                return redirect(url_for('secrets'), logged_in=True)
             else:
                 flash('Sorry, email or password is incorrect')
         else:
