@@ -44,6 +44,11 @@ def home():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
+        email = request.form['email']
+        user = db.session.execute(db.select(User).where(User.email == email)).scalar()
+        if user:
+            flash("This email is already associated with an account. Please login instead.")
+            return render_template('login.html')
         password = request.form['password']
         hashed_password = generate_password_hash(password, method = 'pbkdf2:sha256', salt_length=8)
         new_user = User(    
