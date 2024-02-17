@@ -66,10 +66,14 @@ def login():
         password = request.form.get('password')
 
         user = db.session.execute(db.select(User).where(User.email==email)).scalar()
-        if check_password_hash(user.password, password):
-            login_user(user)
-            return redirect(url_for('secrets'))
-        
+        if user:
+            if check_password_hash(user.password, password):
+                login_user(user)
+                return redirect(url_for('secrets'))
+            else:
+                flash('Sorry, email or password is incorrect')
+        else:
+            flash('Sorry, email or password is incorrect')
     return render_template("login.html")
 
 
