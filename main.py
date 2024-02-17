@@ -16,7 +16,7 @@ login_manager.init_app(app)
 # LOAD USER
 @login_manager.user_loader
 def load_user(user_id):
-    return db.get_or_404(user_id)
+    return db.get_or_404(User, user_id)
 
 # CREATE DATABASE
 class Base(DeclarativeBase):
@@ -53,13 +53,23 @@ def register():
         )
         db.session.add(new_user)
         db.session.commit()
+        login_user(new_user)
         return render_template('secrets.html', name=new_user.name)
 
     return render_template("register.html")
 
 
-@app.route('/login')
+@app.route('/login', methods=['POST', 'GET'])
 def login():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        user = db.session.execute(db.select(User).where(User.email==email)).scalar()
+        if check_password_hash(user.password, password):
+            login_user(user)
+            return redirect(url_for('secrets'))
+        
     return render_template("login.html")
 
 
