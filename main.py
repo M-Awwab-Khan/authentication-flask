@@ -7,6 +7,7 @@ from flask_login import UserMixin, login_user, LoginManager, login_required, cur
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret-key-goes-here'
+app.config['UPLOAD_FOLDER'] = 'static/files'
 
 # CREATE DATABASE
 class Base(DeclarativeBase):
@@ -63,7 +64,9 @@ def logout():
 
 @app.route('/download')
 def download():
-    pass
+    return send_from_directory(
+        app.config['UPLOAD_FOLDER'], 'cheat_sheet.pdf', as_attachment=True
+    )
 
 
 if __name__ == "__main__":
